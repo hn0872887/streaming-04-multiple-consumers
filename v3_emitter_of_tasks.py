@@ -2,14 +2,15 @@
     This program sends a message to a queue on the RabbitMQ server.
     Make tasks harder/longer-running by adding dots at the end of the message.
 
-    Author: Denise Case
-    Date: January 15, 2023
+    Author: Hanh Nguyen
+    Date: Feb 7, 2023
 
 """
 
 import pika
 import sys
 import webbrowser
+import csv
 
 def offer_rabbitmq_admin_site():
     """Offer to open the RabbitMQ Admin website"""
@@ -59,10 +60,24 @@ def send_message(host: str, queue_name: str, message: str):
 if __name__ == "__main__":  
     # ask the user if they'd like to open the RabbitMQ Admin site
     offer_rabbitmq_admin_site()
-    # get the message from the command line
+    # get the message from the csv file
     # if no arguments are provided, use the default message
     # use the join method to convert the list of arguments into a string
     # join by the space character inside the quotes
-    message = " ".join(sys.argv[1:]) or "Replay 3rd task....."
+    #message = " ".join(sys.argv[1:]) or "Second task....."
+    input_file_name = "tasks.csv"
+    
+    input_file = open(input_file_name, "r")
+    
+    reader = csv.reader(input_file, delimiter = ",")
+    
+    for row in reader:
+        message = ",".join(row)
+        
+        send_message("localhost", "task_queue3", message)
+        
+    input_file.close()
+        
+    
     # send the message to the queue
-    send_message("localhost","task_queue2",message)
+    #send_message("localhost","task_queue2",message)
